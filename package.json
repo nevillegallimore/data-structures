@@ -1,0 +1,21 @@
+{
+    "name": "data-structures",
+    "description": "Library providing data structure implementations using TypeScript",
+    "author": "Neville Gallimore",
+    "license": "UNLISENCED",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "type": "module",
+    "devDependencies": {
+        "@vitest/coverage-v8": "3.0.1",
+        "typescript": "^5.7.3",
+        "vitest": "^3.0.1"
+    },
+    "scripts": {
+        "build": "pnpm run clean && tsc",
+        "clean": "rm -rf ./dist && rm -rf ./coverage",
+        "test": "vitest",
+        "test:coverage": "vitest --coverage",
+        "test:watch": "vitest --watch"
+    }
+}

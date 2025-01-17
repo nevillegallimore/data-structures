@@ -1,0 +1,14 @@
+import { configDefaults, defineConfig } from 'vitest/config';
+
+const configuration = defineConfig({
+    test: {
+        coverage: {
+            exclude: [...(configDefaults.coverage.exclude || []), 'lib/index.ts'],
+        },
+        exclude: ['node_modules/**', 'dist/**'],
+        include: ['lib/**/*.spec.ts'],
+        watch: false,
+    },
+});
+
+export default configuration;

@@ -1,6 +1,6 @@
 export class StaticArray<T = any> {
     private data: Array<T>;
-    private length: number;
+    public length: number;
 
     constructor(length: number) {
         this.length = length;

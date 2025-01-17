@@ -7,6 +7,9 @@ const configuration = defineConfig({
         },
         exclude: ['node_modules/**', 'dist/**'],
         include: ['lib/**/*.spec.ts'],
+        reporters: [
+            ['default', { summary: false }],
+        ],
         watch: false,
     },
 });

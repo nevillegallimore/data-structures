@@ -1,4 +1,4 @@
-import { Iterator, Predicate, Reducer, Transformer } from './types.js';
+import { Iterator, Predicate, Reducer, Transformer } from '../types.js';
 
 export class DynamicArray<T> {
     private data: Array<T>;
@@ -111,7 +111,7 @@ export class DynamicArray<T> {
         return false;
     }
 
-    every (predicate: Predicate<T>): boolean {
+    every(predicate: Predicate<T>): boolean {
         for (let i = 0; i < this.length; i++) {
             if (!predicate(this.data[i], i, this.toArray())) return false;
         }
@@ -125,14 +125,28 @@ export class DynamicArray<T> {
     }
 
     map<U>(transformer: Transformer<T, U>): DynamicArray<U> {
-        throw new Error('Function not yet implemented');
+        const result: DynamicArray<U> = new DynamicArray<U>();
+        for (let i = 0; i < this.length; i++) {
+            result.push(transformer(this.data[i], i, this.toArray()));
+        }
+        return result;
     }
 
     filter(predicate: Predicate<T>): DynamicArray<T> {
-        throw new Error('Function not yet implemented');
+        const result: DynamicArray<T> = new DynamicArray<T>();
+        for (let i = 0; i < this.length; i++) {
+            if (predicate(this.data[i], i, this.toArray())) {
+                result.push(this.data[i]);
+            }
+        }
+        return result;
     }
 
-    reduce<U>(reducer: Reducer<T, U>, initValue: U): U {
-        throw new Error('Function not yet implemented');
+    reduce<U>(reducer: Reducer<T, U>, initValue: U | undefined): U {
+        let accumulator: U | undefined = initValue;
+        for (let i = 0; i < this.length; i++) {
+            accumulator = reducer(accumulator, this.data[i], i, this.toArray());
+        }
+        return accumulator as U;
     }
 }

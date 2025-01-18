@@ -266,4 +266,50 @@ describe(`DynamicArray<T>`, () => {
             }
         });
     });
+
+    describe(`map<U>(transformer: Transformer<T>): DynamicArray<U>`, () => {
+        it(`should map values as expected`, () => {
+            const array: DynamicArray<number> = DynamicArray.fromArray([1, 2, 3]);
+            const result: DynamicArray<string | undefined> = array.map((value: number): string | undefined => {
+                switch (value) {
+                    case 1:
+                        return 'One';
+                    case 2:
+                        return 'Two';
+                    case 3:
+                        return 'Three';
+                    default:
+                        return undefined;
+                }
+            });
+
+            assert.isTrue(result instanceof DynamicArray);
+            assert.deepEqual(result.get(0), 'One');
+            assert.deepEqual(result.get(1), 'Two');
+            assert.deepEqual(result.get(2), 'Three');
+        });
+    });
+
+    describe(`filter(predicate: Predicate<T>): DynamicArray<T>`, () => {
+        it(`should return array of items that satisfy predicate`, () => {
+            const array: DynamicArray<number> = DynamicArray.fromArray([1, 2, 3, 4]);
+            const result: DynamicArray<number> = array.filter((value: number): boolean => {
+                return value % 2 === 0;
+            });
+            assert.isTrue(result instanceof DynamicArray);
+            assert.deepEqual(result.length, 2);
+            assert.deepEqual(result.get(0), 2);
+            assert.deepEqual(result.get(1), 4);
+        });
+    });
+
+    describe(`reducer<U>(reducer: Reducer<T, U>, initValue: U): U`, () => {
+        it(`should reduce values as expected`, () => {
+            const array: DynamicArray<number> = DynamicArray.fromArray([1, 2, 3]);
+            const result: number = array.reduce<number>((accumulator: number | undefined, value: number) => {
+                return accumulator ? accumulator + value : value;
+            }, 0);
+            assert.deepEqual(result, 6);
+        });
+    });
 });

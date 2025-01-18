@@ -15,7 +15,7 @@ describe('StaticArray<T>', () => {
     it(`should return static length`, () => {
         const array: StaticArray<number> = new StaticArray<number>(3);
         assert.deepEqual(array.length, 3);
-        
+
         array.set(0, 1);
         assert.deepEqual(array.length, 3);
 
@@ -238,7 +238,7 @@ describe('StaticArray<T>', () => {
                         return undefined;
                 }
             });
-            assert.isTrue(result instanceof StaticArray)
+            assert.isTrue(result instanceof StaticArray);
             assert.deepEqual(result.get(0), 'One');
             assert.deepEqual(result.get(1), 'Two');
             assert.deepEqual(result.get(2), 'Three');
@@ -261,8 +261,8 @@ describe('StaticArray<T>', () => {
     describe(`reduce<U>(reducer: Reducer<T, U>, initValue: U): U`, () => {
         it(`should reduce values as expected`, () => {
             const array: StaticArray<number> = StaticArray.fromArray([1, 2, 3]);
-            const result: number = array.reduce<number>((accumulator: number, value: number) => {
-                return accumulator + value;
+            const result: number = array.reduce<number>((accumulator: number | undefined, value: number): number => {
+                return accumulator ? accumulator + value : value;
             }, 0);
             assert.deepEqual(result, 6);
         });

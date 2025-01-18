@@ -3,7 +3,7 @@ import { configDefaults, defineConfig } from 'vitest/config';
 const configuration = defineConfig({
     test: {
         coverage: {
-            exclude: [...(configDefaults.coverage.exclude || []), 'lib/index.ts'],
+            exclude: [...(configDefaults.coverage.exclude || []), 'lib/index.ts', 'lib/types.ts'],
         },
         exclude: ['node_modules/**', 'dist/**'],
         include: ['lib/**/*.spec.ts'],

@@ -10,15 +10,15 @@ export class StaticArray<T = any> {
     }
 
     static fromArray<T>(values: T[]): StaticArray<T> {
-        const array: StaticArray<T> = new StaticArray<T>(values.length);
+        const result: StaticArray<T> = new StaticArray<T>(values.length);
         for (let i = 0; i < values.length; i++) {
-            array.set(i, values[i]);
+            result.set(i, values[i]);
         }
-        return array;
+        return result;
     }
 
     toArray(): Array<T> {
-        return this.data;
+        return [...this.data];
     }
 
     get(index: number): T | undefined {

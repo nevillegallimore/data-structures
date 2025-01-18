@@ -15,6 +15,15 @@ describe('StaticArray<T>', () => {
     it(`should return static length`, () => {
         const array: StaticArray<number> = new StaticArray<number>(3);
         assert.deepEqual(array.length, 3);
+        
+        array.set(0, 1);
+        assert.deepEqual(array.length, 3);
+
+        array.set(1, 2);
+        assert.deepEqual(array.length, 3);
+
+        array.set(2, 3);
+        assert.deepEqual(array.length, 3);
     });
 
     describe(`get(index: number): T | undefined`, () => {

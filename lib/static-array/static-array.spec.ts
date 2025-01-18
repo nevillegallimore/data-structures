@@ -1,6 +1,12 @@
 import { assert, describe, it } from 'vitest';
 import { StaticArray } from './static-array.ts';
 
+describe('Failure', () => {
+    it('should fail', () => {
+        assert.isTrue(false);
+    });
+});
+
 describe('StaticArray<T>', () => {
     it(`should instantiate a StaticArray`, () => {
         const array: StaticArray<number> = new StaticArray<number>(3);

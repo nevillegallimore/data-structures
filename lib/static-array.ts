@@ -1,3 +1,5 @@
+import type { Iterator, Predicate, Reducer, Transformer } from './types.js';
+
 export class StaticArray<T = any> {
     private data: Array<T>;
     public length: number;
@@ -13,6 +15,10 @@ export class StaticArray<T = any> {
             array.set(i, values[i]);
         }
         return array;
+    }
+
+    toArray(): Array<T> {
+        return this.data;
     }
 
     get(index: number): T | undefined {
@@ -38,64 +44,61 @@ export class StaticArray<T = any> {
         }
     }
 
-    find(predicate: (value: T, index: number, array: StaticArray<T>) => boolean): T | undefined {
+    find(predicate: Predicate<T>): T | undefined {
         for (let i = 0; i < this.length; i++) {
-            if (predicate(this.data[i], i, this)) return this.data[i];
+            if (predicate(this.data[i], i, this.toArray())) return this.data[i];
         }
     }
 
-    findIndex(predicate: (value: T, index: number, array: StaticArray<T>) => boolean): number {
+    findIndex(predicate: Predicate<T>): number {
         for (let i = 0; i < this.length; i++) {
-            if (predicate(this.data[i], i, this)) return i;
+            if (predicate(this.data[i], i, this.toArray())) return i;
         }
         return -1;
     }
 
-    some(predicate: (value: T, index: number, array: StaticArray<T>) => boolean): boolean {
+    some(predicate: Predicate<T>): boolean {
         for (let i = 0; i < this.length; i++) {
-            if (predicate(this.data[i], i, this)) return true;
+            if (predicate(this.data[i], i, this.toArray())) return true;
         }
         return false;
     }
 
-    every(predicate: (value: T, index: number, array: StaticArray<T>) => boolean): boolean {
+    every(predicate: Predicate<T>): boolean {
         for (let i = 0; i < this.length; i++) {
-            if (!predicate(this.data[i], i, this)) return false;
+            if (!predicate(this.data[i], i, this.toArray())) return false;
         }
         return true;
     }
 
-    forEach(callbackFn: (value: T, index: number, array: StaticArray<T>) => void): void {
+    forEach(iterator: Iterator<T>): void {
         for (let i = 0; i < this.length; i++) {
-            callbackFn(this.data[i], i, this);
+            iterator(this.data[i], i, this.toArray());
         }
     }
 
-    map<U>(callbackFn: (value: T, index: number, array: StaticArray<T>) => U): StaticArray<U> {
+    map<U>(transformer: Transformer<T, U>): StaticArray<U> {
         let result: StaticArray<U> = new StaticArray<U>(this.length);
         for (let i = 0; i < this.length; i++) {
-            result.set(i, callbackFn(this.data[i], i, this));
+            result.set(i, transformer(this.data[i], i, this.toArray()));
         }
         return result;
     }
 
-    filter(predicate: (value: T, index: number, array: StaticArray<T>) => boolean): StaticArray<T> {
+    filter(predicate: Predicate<T>): StaticArray<T> {
         let array: Array<T> = [];
         for (let i = 0; i < this.length; i++) {
-            if (predicate(this.data[i], i, this)) {
+            if (predicate(this.data[i], i, this.toArray())) {
                 array.push(this.data[i]);
             }
         }
         return StaticArray.fromArray(array);
     }
 
-    reduce<U>(
-        callbackFn: (accumulator: U, value: T, index: number, array: StaticArray<T>) => U,
-        initValue: U,
-    ): U {
+    reduce<U>(reducer: Reducer<T, U>, initValue: U): U {
         let accumulator = initValue;
         for (let i = 0; i < this.length; i++) {
-            accumulator = callbackFn(accumulator, this.data[i], i, this);
+            accumulator = reducer(accumulator, this.data[i], i, this.toArray());
         }
         return accumulator;
     }

@@ -12,6 +12,11 @@ describe('StaticArray<T>', () => {
         assert.isTrue(array instanceof StaticArray);
     });
 
+    it(`should return static length`, () => {
+        const array: StaticArray<number> = new StaticArray<number>(3);
+        assert.deepEqual(array.length, 3);
+    });
+
     describe(`get(index: number): T | undefined`, () => {
         it(`should return value given existing index with value`, () => {
             const array: StaticArray<number> = StaticArray.fromArray([1, 2, 3]);
@@ -188,28 +193,28 @@ describe('StaticArray<T>', () => {
         });
     });
 
-    describe(`forEach(callbackFn: IteratorCallback<T>): void`, () => {
-        it(`should call callbackFn with value, index and array for each value`, () => {
+    describe(`forEach(iterator: Iterator<T>): void`, () => {
+        it(`should call iterator with value, index and array for each value`, () => {
             const values: number[] = [];
             const indices: number[] = [];
             const arrays: any[] = [];
 
-            const array: StaticArray<number> = StaticArray.fromArray([1, 2, 3]);
-            array.forEach((value: number, index: number, staticArray: StaticArray<number>) => {
+            const staticArray: StaticArray<number> = StaticArray.fromArray([1, 2, 3]);
+            staticArray.forEach((value: number, index: number, array: number[]) => {
                 values.push(value);
                 indices.push(index);
-                arrays.push(staticArray);
+                arrays.push(array);
             });
 
             for (let i = 0; i < 3; i++) {
                 assert.deepEqual(values[i], i + 1);
                 assert.deepEqual(indices[i], i);
-                assert.isTrue(arrays[i] instanceof StaticArray);
+                assert.deepEqual(arrays[i], [1, 2, 3]);
             }
         });
     });
 
-    describe(`map<U>(callbackFn: IteratorCallback<T, U>): StaticArray<U>`, () => {
+    describe(`map<U>(transformer: Transformer<T, U>): StaticArray<U>`, () => {
         it(`should map values as expected`, () => {
             const array: StaticArray<number> = StaticArray.fromArray([1, 2, 3]);
             const result: StaticArray<string | undefined> = array.map<string | undefined>((value: number) => {
@@ -244,7 +249,7 @@ describe('StaticArray<T>', () => {
         });
     });
 
-    describe(`reduce<U>(reducer: Reducer<U, T>, initValue: U): U`, () => {
+    describe(`reduce<U>(reducer: Reducer<T, U>, initValue: U): U`, () => {
         it(`should reduce values as expected`, () => {
             const array: StaticArray<number> = StaticArray.fromArray([1, 2, 3]);
             const result: number = array.reduce<number>((accumulator: number, value: number) => {

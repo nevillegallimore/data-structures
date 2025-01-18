@@ -1,4 +1,4 @@
-import type { Iterator, Predicate, Reducer, Transformer } from './types.js';
+import type { Iterator, Predicate, Reducer, Transformer } from '../types.js';
 
 export class StaticArray<T = any> {
     private data: Array<T>;
@@ -10,15 +10,15 @@ export class StaticArray<T = any> {
     }
 
     static fromArray<T>(values: T[]): StaticArray<T> {
-        const array: StaticArray<T> = new StaticArray<T>(values.length);
+        const result: StaticArray<T> = new StaticArray<T>(values.length);
         for (let i = 0; i < values.length; i++) {
-            array.set(i, values[i]);
+            result.set(i, values[i]);
         }
-        return array;
+        return result;
     }
 
     toArray(): Array<T> {
-        return this.data;
+        return [...this.data];
     }
 
     get(index: number): T | undefined {
@@ -95,11 +95,11 @@ export class StaticArray<T = any> {
         return StaticArray.fromArray(array);
     }
 
-    reduce<U>(reducer: Reducer<T, U>, initValue: U): U {
-        let accumulator = initValue;
+    reduce<U>(reducer: Reducer<T, U>, initValue: U | undefined): U {
+        let accumulator: U | undefined = initValue;
         for (let i = 0; i < this.length; i++) {
             accumulator = reducer(accumulator, this.data[i], i, this.toArray());
         }
-        return accumulator;
+        return accumulator as U;
     }
 }

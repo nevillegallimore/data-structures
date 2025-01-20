@@ -33,6 +33,13 @@ describe(`LinkedList<T>`, () => {
         });
     });
 
+    describe(`toReversedArray(): Array<T>`, () => {
+        it(`should return linked list items as array in reverse order`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.toReversedArray(), [3, 2, 1]);
+        });
+    });
+
     describe(`get(index: number): T | undefined`, () => {
         it(`should return value given valid index`, () => {
             const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
@@ -66,6 +73,20 @@ describe(`LinkedList<T>`, () => {
             assert.isUndefined(list.get(3));
             list.set(3, 1337);
             assert.isUndefined(list.get(3));
+        });
+    });
+
+    describe(`has(value: T): boolean`, () => {
+        it(`should return true given list contains node with value`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.isTrue(list.has(1));
+            assert.isTrue(list.has(2));
+            assert.isTrue(list.has(3));
+        });
+
+        it(`should return false given list does not contain node with value`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.isFalse(list.has(4));
         });
     });
 
@@ -238,6 +259,157 @@ describe(`LinkedList<T>`, () => {
         it(`should return undefined given empty list`, () => {
             const list: LinkedList<number> = new LinkedList<number>();
             assert.isUndefined(list.removeTail());
+        });
+    });
+
+    describe('find(predicate: Predicate<T>): T | undefined', () => {
+        it('should return value of first node that satisfies predicate', () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: number | undefined = list.find((value: number) => {
+                return value === 2;
+            });
+            assert.isDefined(result);
+            assert.deepEqual(result, 2);
+        });
+
+        it('should return undefined given no node satisfies predicate', () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: number | undefined = list.find((value: number) => {
+                return value === 4;
+            });
+            assert.isUndefined(result);
+        });
+    });
+
+    describe('findIndex(predicate: Predicate<T>): number', () => {
+        it('should return index of first node that satisfies predicate', () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: number | undefined = list.findIndex((value: number) => {
+                return value === 2;
+            });
+            assert.deepEqual(result, 1);
+        });
+
+        it('should return -1 given no node satisfies predicate', () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: number | undefined = list.findIndex((value: number) => {
+                return value === 4;
+            });
+            assert.deepEqual(result, -1);
+        });
+    });
+
+    describe('some(predicate: Predicate<T>): boolean', () => {
+        it(`should return true if any node's value satisfies predicate`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: boolean = list.some((value: number) => {
+                return value === 2;
+            });
+            assert.isTrue(result);
+        });
+
+        it(`should return false if no node's value satisfies predicate`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: boolean = list.some((value: number) => {
+                return value === 4;
+            });
+            assert.isFalse(result);
+        });
+
+        it(`should return false given empty list`, () => {
+            const list: LinkedList<number> = new LinkedList<number>();
+            assert.deepEqual(list.length, 0);
+            assert.isFalse(list.some(() => { return true; }));
+
+        })
+    });
+
+    describe('every(predicate: Predicate<T>): boolean', () => {
+        it(`should return true if every node's value satisfies predicate`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: boolean = list.every((value: number) => {
+                return value < 4;
+            });
+            assert.isTrue(result);
+        });
+
+        it(`should return false if any node's value does not satisfy predicate`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: boolean = list.every((value: number) => {
+                return value < 3;
+            });
+            assert.isFalse(result);
+        });
+
+        it(`should return true given empty list`, () => {
+            const list: LinkedList<number> = new LinkedList<number>();
+            assert.deepEqual(list.length, 0);
+            assert.isTrue(list.every(() => { return true; }));
+        });
+    });
+
+    describe(`filter(predicate: Predicate<T>): LinkedList<T>`, () => {
+        it(`should filter list as expected`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3, 4]);
+            assert.deepEqual(list.length, 4);
+
+            const result: LinkedList<number> = list.filter((value: number) => {
+                return value % 2 === 0;
+            });
+            assert.deepEqual(result.length, 2);
+            assert.deepEqual(result.get(0), 2);
+            assert.deepEqual(result.get(1), 4);
+        });
+    });
+
+    describe(`forEach(iterator: Iterator<T>): void`, () => {
+        it(`should call iterator for each node in the list`, () => {
+            const values: Array<number> = [];
+            const indices: Array<number> = [];
+            const arrays: Array<number[]> = [];
+
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            list.forEach((value: number, index: number, array: number[]): void => {
+                values.push(value);
+                indices.push(index);
+                arrays.push(array);
+            });
+
+            assert.deepEqual(values, [1, 2, 3]);
+            assert.deepEqual(indices, [0, 1, 2]);
+            assert.deepEqual(arrays, [[1, 2, 3], [1, 2, 3], [1, 2, 3]]);
+        });
+    });
+
+    describe(`map<U>(transformer: Transformer<T, U>): LinkedList<U>`, () => {
+        it(`should map list as expected`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.length, 3);
+
+            const result: LinkedList<string | undefined> = list.map<string | undefined>((value: number) => {
+                switch (value) {
+                    case 1:
+                        return 'One';
+                    case 2:
+                        return 'Two';
+                    case 3:
+                        return 'Three';
+                    default:
+                        return undefined;
+                }
+            });
+            assert.deepEqual(result.length, 3);
+            assert.deepEqual(result.toArray(), ['One', 'Two', 'Three']);
+        });
+    });
+
+    describe(`reduce(reducer: Reducer<T, U>, initValue: U): U`, () => {
+        it(`should reduce as expected`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            const result: number = list.reduce<number>((accumulator: number | undefined, value: number) => {
+                return accumulator ? accumulator + value : value;
+            }, 0);
+            assert.deepEqual(result, 6);
         });
     });
 });

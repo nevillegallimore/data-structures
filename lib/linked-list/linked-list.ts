@@ -1,3 +1,5 @@
+import { Iterator, Predicate, Reducer, Transformer } from "../types.js";
+
 export interface Node<T> {
     value: T;
     prev?: Node<T>;
@@ -31,6 +33,16 @@ export class LinkedList<T> {
         return array;
     }
 
+    toReversedArray(): Array<T> {
+        let array: Array<T> = [];
+        let node: Node<T> | undefined = this.tail;
+        while (node) {
+            array.push(node.value);
+            node = node.prev;
+        }
+        return array;
+    }
+
     get(index: number): T | undefined {
         if (!this.head || index < 0 || index >= this.length) return undefined;
 
@@ -45,7 +57,7 @@ export class LinkedList<T> {
     }
 
     set(index: number, value: T): void {
-        if (!this.head || index < 0 || index >= this.length) return undefined;
+        if (!this.head || index < 0 || index >= this.length) return;
 
         let counter: number = 0;
         let node: Node<T> = this.head as Node<T>;
@@ -55,6 +67,16 @@ export class LinkedList<T> {
         }
 
         node.value = value;
+    }
+
+    has(value: T): boolean {
+        let node: Node<T> | undefined = this.head;
+        while (node) {
+            if (node.value === value) return true;
+            node = node.next;
+        }
+
+        return false;
     }
 
     insertHead(value: T): void {
@@ -161,5 +183,106 @@ export class LinkedList<T> {
         this.length -= 1;
 
         return node.value;
+    }
+
+    find(predicate: Predicate<T>): T | undefined {
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            if (predicate(node.value, index, this.toArray())) return node.value;
+            node = node.next;
+            index += 1;
+        }
+
+        return undefined;
+    }
+
+    findIndex(predicate: Predicate<T>): number {
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            if (predicate(node.value, index, this.toArray())) return index;
+            node = node.next;
+            index += 1;
+        }
+
+        return -1;
+    }
+
+    some(predicate: Predicate<T>): boolean {
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            if (predicate(node.value, index, this.toArray())) return true;
+            node = node.next;
+            index += 1;
+        }
+
+        return false;
+    }
+
+    every(predicate: Predicate<T>): boolean {
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            if (!predicate(node.value, index, this.toArray())) return false;
+            node = node.next;
+            index += 1;
+        }
+
+        return true;
+    }
+
+    filter(predicate: Predicate<T>): LinkedList<T> {
+        const list: LinkedList<T> = new LinkedList<T>();
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            if (predicate(node.value, index, this.toArray())) {
+                list.insertTail(node.value);
+            }
+            node = node.next;
+            index += 1;
+        }
+        return list;
+    }
+
+    forEach(iterator: Iterator<T>): void {
+        const array: Array<T> = this.toArray();
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            iterator(node.value, index, array);
+            node = node.next;
+            index += 1;
+        }
+    }
+
+    map<U>(transformer: Transformer<T, U>): LinkedList<U> {
+        const array = this.toArray();
+        const list: LinkedList<U> = new LinkedList<U>();
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            list.insertTail(transformer(node.value, index, array));
+            node = node.next;
+            index += 1;
+        }
+        return list;
+    }
+
+    reduce<U>(reducer: Reducer<T, U>, initValue: U | undefined): U {
+        let accumulator: U | undefined = initValue;
+
+        const array: Array<T> = this.toArray();
+        let node: Node<T> | undefined = this.head;
+        let index: number = 0;
+        while (node) {
+            accumulator = reducer(accumulator, node.value, index, array);
+            node = node.next;
+            index += 1;
+        }
+
+        return accumulator as U;
     }
 }

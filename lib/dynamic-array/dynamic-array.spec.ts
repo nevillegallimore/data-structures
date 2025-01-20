@@ -312,4 +312,57 @@ describe(`DynamicArray<T>`, () => {
             assert.deepEqual(result, 6);
         });
     });
+
+    describe(`sort(comparer?: Comparer<T>): void`, () => {
+        it(`should sort array in place as expected`, () => {
+            const array: DynamicArray<number> = DynamicArray.fromArray([3, 2, 4, 1]);
+            array.sort();
+            assert.deepEqual(array.toArray(), [1, 2, 3, 4]);
+        });
+
+        it(`should call comparer as expected`, () => {
+            const array: DynamicArray<{ id: number, name: string }> = DynamicArray.fromArray<{ id: number, name: string }>([
+                { id: 1, name: 'John Doe' },
+                { id: 2, name: 'Jane Doe' },
+                { id: 3, name: 'Zack Doe' },
+            ]);
+            
+            array.sort((lhs: { id: number, name: string }, rhs: { id: number, name: string }) => {
+                return lhs.name < rhs.name ? -1 : lhs.name > rhs.name ? +1 : 0;
+            });
+            assert.deepEqual(array.toArray(), [
+                { id: 2, name: 'Jane Doe' },
+                { id: 1, name: 'John Doe' },
+                { id: 3, name: 'Zack Doe' },
+            ]);
+
+            array.sort((lhs: { id: number, name: string }, rhs: { id: number, name: string }) => {
+                return lhs.name < rhs.name ? +1 : lhs.name > rhs.name ? -1 : 0;
+            });
+            assert.deepEqual(array.toArray(), [
+                { id: 3, name: 'Zack Doe' },
+                { id: 1, name: 'John Doe' },
+                { id: 2, name: 'Jane Doe' },
+            ]);
+
+            array.sort((lhs: { id: number, name: string }, rhs: { id: number, name: string }) => {
+                return lhs.id < rhs.id ? -1 : lhs.id > rhs.id ? +1 : 0;
+            });
+            assert.deepEqual(array.toArray(), [
+                { id: 1, name: 'John Doe' },
+                { id: 2, name: 'Jane Doe' },
+                { id: 3, name: 'Zack Doe' },
+            ]);
+        });
+    });
+
+    describe(`sorted(comparer?: Comparer<T>): DynamicArray<T>`, () => {
+        it('should return sorted dynamic array', () => {
+            const array: DynamicArray<number> = DynamicArray.fromArray([3, 2, 4, 1]);
+            assert.deepEqual(array.toArray(), [3, 2, 4, 1]);
+
+            const result: DynamicArray<number> = array.sorted();
+            assert.deepEqual(result.toArray(), [1, 2, 3, 4]);
+        });
+    });
 });

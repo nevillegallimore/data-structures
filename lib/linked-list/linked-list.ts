@@ -1,4 +1,5 @@
-import { Iterator, Predicate, Reducer, Transformer } from "../types.js";
+import { Comparer, Iterator, Predicate, Reducer, Transformer } from "../types.js";
+import { defaultComparer } from "../utils.js";
 
 export interface Node<T> {
     value: T;
@@ -284,5 +285,59 @@ export class LinkedList<T> {
         }
 
         return accumulator as U;
+    }
+
+    sort(comparer: Comparer<T> = defaultComparer): void {
+        if (this.length < 2) return;
+
+        let lidx: number;
+        let ridx: number = this.length - 1;
+        let lhs: Node<T>;
+        let rhs: Node<T>;
+
+        while (ridx > 0) {
+            lidx = 0;
+            while (lidx < ridx) {
+                // @ts-ignore next line
+                lhs = lidx === 0 ? this.head as Node<T> : lhs.next as Node<T>;
+                rhs = lhs.next as Node<T>;
+
+                if (comparer(lhs.value, rhs.value) > 0) {
+                    if (this.head === lhs) {
+                        this.head = rhs;
+                        rhs.prev = undefined;
+                        lhs.prev = rhs;
+                        lhs.next = rhs.next;
+                        rhs.next = lhs;
+                    } else {
+                        const prev: Node<T> = lhs.prev as Node<T>;
+                        prev.next = rhs;
+                        rhs.prev = prev;
+                        lhs.prev = rhs;
+                        lhs.next = rhs.next;
+                        rhs.next = lhs;
+                    }
+
+                    if (lhs.next) {
+                        lhs.next.prev = lhs;
+                    }
+
+                    if (this.tail === rhs) {
+                        this.tail = lhs;
+                    }
+
+                    lhs = rhs;
+                }
+                lidx += 1;
+            }
+
+            ridx -= 1;
+        }
+    }
+
+    sorted(comparer: Comparer<T> = defaultComparer): LinkedList<T> {
+        const list: LinkedList<T> = LinkedList.fromArray<T>(this.toArray());
+        list.sort(comparer);
+        return list;
     }
 }

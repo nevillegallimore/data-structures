@@ -1,4 +1,5 @@
-import { Iterator, Predicate, Reducer, Transformer } from '../types.js';
+import { Comparer, Iterator, Predicate, Reducer, Transformer } from '../types.js';
+import { defaultComparer } from '../utils.js';
 
 export class DynamicArray<T> {
     private data: Array<T>;
@@ -148,5 +149,21 @@ export class DynamicArray<T> {
             accumulator = reducer(accumulator, this.data[i], i, this.toArray());
         }
         return accumulator as U;
+    }
+
+    sort(comparer: Comparer<T> = defaultComparer<T>): void {
+        for (let i = this.length - 1; i > 0; i--) {
+            for (let j = 0; j < i; j++) {
+                if (comparer(this.data[j], this.data[j + 1]) > 0) {
+                    [this.data[j], this.data[j + 1]] = [this.data[j + 1], this.data[j]];
+                }
+            }
+        }
+    }
+
+    sorted(comparer: Comparer<T> = defaultComparer<T>): DynamicArray<T> {
+        const array: DynamicArray<T> = DynamicArray.fromArray(this.toArray());
+        array.sort(comparer);
+        return array;
     }
 }

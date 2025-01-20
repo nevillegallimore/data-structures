@@ -16,7 +16,7 @@ export class LinkedList<T> {
     static fromArray<T>(values: Array<T>): LinkedList<T> {
         const list: LinkedList<T> = new LinkedList<T>();
         for (let i = 0; i < values.length; i++) {
-            list.append(values[i]);
+            list.insertTail(values[i]);
         }
         return list;
     }
@@ -57,7 +57,7 @@ export class LinkedList<T> {
         node.value = value;
     }
 
-    prepend(value: T): void {
+    insertHead(value: T): void {
         const node: Node<T> = { value };
         this.length += 1;
 
@@ -72,7 +72,7 @@ export class LinkedList<T> {
         this.head = node;
     }
 
-    append(value: T): void {
+    insertTail(value: T): void {
         const node: Node<T> = { value };
         this.length += 1;
 
@@ -88,8 +88,8 @@ export class LinkedList<T> {
     }
 
     insert(index: number = this.length, value: T): void {
-        if (index === 0) return this.prepend(value);
-        if (index === this.length) return this.append(value);
+        if (index === 0) return this.insertHead(value);
+        if (index === this.length) return this.insertTail(value);
 
         // Attempted to insert into list at invalid index
         if (index < 0 || index > this.length) return;
@@ -106,5 +106,60 @@ export class LinkedList<T> {
         curr.next = prev.next;
         curr.prev = prev;
         prev.next = curr;
+    }
+
+    removeHead(): T | undefined {
+        if (!this.head) return undefined;
+
+        const node: Node<T> = this.head;
+        if (this.head === this.tail) {
+            this.head = undefined;
+            this.tail = undefined;
+            this.length -= 1;
+            return node.value;
+        }
+
+        this.head = node.next as Node<T>;
+        this.head.prev = undefined;
+        this.length -= 1;
+        return node.value;
+    }
+
+    removeTail(): T | undefined {
+        if (!this.tail) return undefined;
+
+        const node: Node<T> = this.tail;
+        if (this.tail === this.head) {
+            this.head = undefined;
+            this.tail = undefined;
+            this.length -= 1;
+            return node.value;
+        }
+
+        this.tail = node.prev as Node<T>;
+        this.tail.next = undefined;
+        this.length -= 1;
+        return node.value;
+    }
+
+    remove(index: number): T | undefined {
+        if (index === 0) return this.removeHead();
+        if (index === this.length - 1) return this.removeTail();
+        if (index < 0 || index >= this.length) return undefined;
+
+        let node: Node<T> = this.head as Node<T>;
+        let counter: number = 0;
+        while (counter < index) {
+            node = node.next as Node<T>;
+            counter += 1;
+        }
+
+        const prev: Node<T> = node.prev as Node<T>;
+        const next: Node<T> = node.next as Node<T>;
+        prev.next = next;
+        next.prev = prev;
+        this.length -= 1;
+
+        return node.value;
     }
 }

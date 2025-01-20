@@ -16,13 +16,13 @@ describe(`LinkedList<T>`, () => {
         const list: LinkedList<number> = new LinkedList<number>();
         assert.deepEqual(list.length, 0);
 
-        list.append(1);
+        list.insertTail(1);
         assert.deepEqual(list.length, 1);
 
-        list.append(2);
+        list.insertTail(2);
         assert.deepEqual(list.length, 2);
 
-        list.append(3);
+        list.insertTail(3);
         assert.deepEqual(list.length, 3);
     });
 
@@ -69,48 +69,6 @@ describe(`LinkedList<T>`, () => {
         });
     });
 
-    describe(`prepend(value: T): void`, () => {
-        it(`should prepend item to list`, () => {
-            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
-            assert.deepEqual(list.length, 3);
-            assert.deepEqual(list.get(0), 1);
-
-            list.prepend(0);
-            assert.deepEqual(list.length, 4);
-            assert.deepEqual(list.get(0), 0);
-        });
-
-        it(`should initialize list given empty list`, () => {
-            const list: LinkedList<number> = new LinkedList<number>();
-            assert.deepEqual(list.length, 0);
-
-            list.prepend(1);
-            assert.deepEqual(list.length, 1);
-            assert.deepEqual(list.get(0), 1);
-        });
-    });
-
-    describe(`append(value: T): void`, () => {
-        it(`should append item to list`, () => {
-            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
-            assert.deepEqual(list.length, 3);
-            assert.deepEqual(list.get(list.length - 1), 3);
-
-            list.append(4);
-            assert.deepEqual(list.length, 4);
-            assert.deepEqual(list.get(list.length - 1), 4);
-        });
-
-        it(`should initialize list given empty list`, () => {
-            const list: LinkedList<number> = new LinkedList<number>();
-            assert.deepEqual(list.length, 0);
-
-            list.append(1);
-            assert.deepEqual(list.length, 1);
-            assert.deepEqual(list.get(0), 1);
-        });
-    });
-
     describe(`insert(index: number, value: T): void`, () => {
         it(`should prepend item given index === 0`, () => {
             const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
@@ -154,6 +112,132 @@ describe(`LinkedList<T>`, () => {
 
             list.insert(list.length + 1, 1337);
             assert.deepEqual(list.length, 3);
+        });
+    });
+
+    describe(`insertHead(value: T): void`, () => {
+        it(`should prepend item to list`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.length, 3);
+            assert.deepEqual(list.get(0), 1);
+
+            list.insertHead(0);
+            assert.deepEqual(list.length, 4);
+            assert.deepEqual(list.get(0), 0);
+        });
+
+        it(`should initialize list given empty list`, () => {
+            const list: LinkedList<number> = new LinkedList<number>();
+            assert.deepEqual(list.length, 0);
+
+            list.insertHead(1);
+            assert.deepEqual(list.length, 1);
+            assert.deepEqual(list.get(0), 1);
+        });
+    });
+
+    describe(`insertTail(value: T): void`, () => {
+        it(`should append item to list`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.length, 3);
+            assert.deepEqual(list.get(list.length - 1), 3);
+
+            list.insertTail(4);
+            assert.deepEqual(list.length, 4);
+            assert.deepEqual(list.get(list.length - 1), 4);
+        });
+
+        it(`should initialize list given empty list`, () => {
+            const list: LinkedList<number> = new LinkedList<number>();
+            assert.deepEqual(list.length, 0);
+
+            list.insertTail(1);
+            assert.deepEqual(list.length, 1);
+            assert.deepEqual(list.get(0), 1);
+        });
+    });
+
+    describe(`remove(index: number): T | undefined`, () => {
+        it(`should remove and return item at index given valid index`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.length, 3);
+
+            let result: number | undefined;
+
+            result = list.remove(1);
+            assert.deepEqual(result, 2);
+            assert.deepEqual(list.length, 2);
+
+            result = list.remove(list.length - 1);
+            assert.deepEqual(result, 3);
+            assert.deepEqual(list.length, 1);
+
+            result = list.remove(0);
+            assert.deepEqual(result, 1);
+            assert.deepEqual(list.length, 0);
+        });
+
+        it(`should return undefined given invalid index`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.length, 3);
+
+            assert.isUndefined(list.remove(-1));
+            assert.deepEqual(list.length, 3);
+
+            assert.isUndefined(list.remove(3));
+            assert.deepEqual(list.length, 3);
+        });
+    });
+
+    describe(`removeHead(): T | undefined`, () => {
+        it(`should remove and return first item given non-empty list`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.length, 3);
+
+            let result: number | undefined;
+
+            result = list.removeHead();
+            assert.deepEqual(result, 1);
+            assert.deepEqual(list.length, 2);
+
+            result = list.removeHead();
+            assert.deepEqual(result, 2);
+            assert.deepEqual(list.length, 1);
+
+            result = list.removeHead();
+            assert.deepEqual(result, 3);
+            assert.deepEqual(list.length, 0);
+        });
+
+        it(`should return undefined given empty list`, () => {
+            const list: LinkedList<number> = new LinkedList<number>();
+            assert.isUndefined(list.removeHead());
+        });
+    });
+
+    describe(`removeTail(): T | undefined`, () => {
+        it(`should remove and return last item given non-empty list`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([1, 2, 3]);
+            assert.deepEqual(list.length, 3);
+
+            let result: number | undefined;
+
+            result = list.removeTail();
+            assert.deepEqual(result, 3);
+            assert.deepEqual(list.length, 2);
+
+            result = list.removeTail();
+            assert.deepEqual(result, 2);
+            assert.deepEqual(list.length, 1);
+
+            result = list.removeTail();
+            assert.deepEqual(result, 1);
+            assert.deepEqual(list.length, 0);
+        });
+
+        it(`should return undefined given empty list`, () => {
+            const list: LinkedList<number> = new LinkedList<number>();
+            assert.isUndefined(list.removeTail());
         });
     });
 });

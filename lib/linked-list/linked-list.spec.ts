@@ -412,4 +412,71 @@ describe(`LinkedList<T>`, () => {
             assert.deepEqual(result, 6);
         });
     });
+
+    describe(`sort(comparer?: Comparer<T>): void`, () => {
+        it(`should sort list in place as expected`, () => {
+            const list: LinkedList<number> = LinkedList.fromArray([3, 5, 2, 4, 1]);
+            list.sort();
+            assert.deepEqual(list.toArray(), [1, 2, 3, 4, 5]);
+        });
+
+        it(`should call comparer as expected`, () => {
+            const list: LinkedList<{ id: number, name: string }> = LinkedList.fromArray<{ id: number, name: string }>([
+                { id: 1, name: 'John Doe' },
+                { id: 2, name: 'Jane Doe' },
+                { id: 3, name: 'Zack Doe' },
+            ]);
+            
+            list.sort((lhs: { id: number, name: string }, rhs: { id: number, name: string }) => {
+                return lhs.name < rhs.name ? -1 : lhs.name > rhs.name ? +1 : 0;
+            });
+            assert.deepEqual(list.toArray(), [
+                { id: 2, name: 'Jane Doe' },
+                { id: 1, name: 'John Doe' },
+                { id: 3, name: 'Zack Doe' },
+            ]);
+
+            list.sort((lhs: { id: number, name: string }, rhs: { id: number, name: string }) => {
+                return lhs.name < rhs.name ? +1 : lhs.name > rhs.name ? -1 : 0;
+            });
+            assert.deepEqual(list.toArray(), [
+                { id: 3, name: 'Zack Doe' },
+                { id: 1, name: 'John Doe' },
+                { id: 2, name: 'Jane Doe' },
+            ]);
+
+            list.sort((lhs: { id: number, name: string }, rhs: { id: number, name: string }) => {
+                return lhs.id < rhs.id ? -1 : lhs.id > rhs.id ? +1 : 0;
+            });
+            assert.deepEqual(list.toArray(), [
+                { id: 1, name: 'John Doe' },
+                { id: 2, name: 'Jane Doe' },
+                { id: 3, name: 'Zack Doe' },
+            ]);
+        });
+
+        it(`should noop for lists with length < 2`, () => {
+            const list: LinkedList<number> = new LinkedList<number>();
+            assert.deepEqual(list.toArray(), []);
+
+            list.sort();
+            assert.deepEqual(list.toArray(), []);
+
+            list.insertTail(1337);
+            assert.deepEqual(list.toArray(), [1337]);
+
+            list.sort();
+            assert.deepEqual(list.toArray(), [1337]);
+        });
+    });
+
+    describe(`sorted(comparer?: Comparer<T>): LinkedList<T>`, () => {
+        it('should return sorted dynamic list', () => {
+            const list: LinkedList<number> = LinkedList.fromArray([3, 5, 2, 4, 1]);
+            assert.deepEqual(list.toArray(), [3, 5, 2, 4, 1]);
+
+            const result: LinkedList<number> = list.sorted();
+            assert.deepEqual(result.toArray(), [1, 2, 3, 4, 5]);
+        });
+    });
 });

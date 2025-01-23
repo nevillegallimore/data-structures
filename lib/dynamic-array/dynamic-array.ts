@@ -1,7 +1,7 @@
 import { Comparer, Iterator, Predicate, Reducer, Transformer } from '../types.js';
 import { defaultComparer } from '../utils.js';
 
-export class DynamicArray<T> {
+export class DynamicArray<T = any> {
     private data: Array<T>;
     private capacity: number;
     public length: number;
@@ -22,7 +22,7 @@ export class DynamicArray<T> {
         }
     }
 
-    static fromArray<T>(values: T[]): DynamicArray<T> {
+    static fromArray<T = any>(values: T[]): DynamicArray<T> {
         const result: DynamicArray<T> = new DynamicArray<T>();
         for (let i = 0; i < values.length; i++) {
             result.push(values[i]);

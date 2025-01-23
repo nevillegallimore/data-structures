@@ -1,13 +1,13 @@
 import { LinkedList } from '../linked-list/linked-list.js';
 
-export class Queue<T> {
+export class Queue<T = any> {
     private list: LinkedList<T>;
 
     constructor() {
         this.list = new LinkedList<T>();
     }
 
-    static fromArray<T>(values: Array<T>): Queue<T> {
+    static fromArray<T = any>(values: Array<T>): Queue<T> {
         const queue: Queue<T> = new Queue<T>();
         for (let i = 0; i < values.length; i++) {
             queue.enqueue(values[i]);

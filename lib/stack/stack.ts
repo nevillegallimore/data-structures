@@ -1,13 +1,13 @@
 import { LinkedList } from '../linked-list/linked-list.js';
 
-export class Stack<T> {
+export class Stack<T = any> {
     private list: LinkedList<T>;
 
     constructor() {
         this.list = new LinkedList<T>();
     }
 
-    static fromArray<T>(values: Array<T>): Stack<T> {
+    static fromArray<T = any>(values: Array<T>): Stack<T> {
         const stack: Stack<T> = new Stack<T>();
         for (let i = 0; i < values.length; i++) {
             stack.push(values[i]);

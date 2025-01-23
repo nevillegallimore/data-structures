@@ -7,7 +7,7 @@ export interface Node<T> {
     next?: Node<T>;
 }
 
-export class LinkedList<T> {
+export class LinkedList<T = any> {
     private head?: Node<T>;
     private tail?: Node<T>;
     public length: number;

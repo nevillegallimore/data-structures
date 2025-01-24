@@ -12,8 +12,11 @@ Linked list implementation with linear runtime `get` and `set` accessors with a 
 ## Queue&lt;T&gt;
 Queue implementation with `enqueue`, `dequeue` and `peek` methods (see [documentation](lib/queue/queue.md)).
 
+## RingBuffer&lt;T&gt;
+Array based ring buffer with `push`, `pop`, `unshift`, `shift` operations running in constant runtime (see [documentation](lib/ring-buffer/ring-buffer.md)).
+
 ## Stack&lt;T&gt;
 Stack implementation with `push`, `pop` and `peek` methods (see [documentation](lib/stack/stack.md)).
 
 ## StaticArray&lt;T&gt;
-Statically sized array, using `get` and `set` to access/modify items in the array with a set of both conventional and functional methods (see [documentation](lib/static-array/readme.md)).
+Statically sized array, using `get` and `set` to access/modify items in the array with a set of both conventional and functional methods (see [documentation](lib/static-array/static-array.md)).

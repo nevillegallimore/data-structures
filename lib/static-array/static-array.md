@@ -1,7 +1,7 @@
 # StaticArray
 Statically sized array, using `get` and `set` to access/modify items in the array and a set of both conventional and functional methods.
 
-#### StaticArray&lt;T = any&gt;
+#### StaticArray&lt;T = any&gt;(length: number)
 Instantiates an empty `StaticArray<T>` of given `length`:
 ```typescript
 const array: StaticArray<number> = new StaticArray<number>(3);
